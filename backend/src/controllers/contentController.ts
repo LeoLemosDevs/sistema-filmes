@@ -28,9 +28,14 @@ export const createContent = async (req: Request, res: Response) => {
             message: 'Conteúdo criado com sucesso.',
             content: newContent
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Erro ao criar conteúdo:', error);
-        res.status(500).json({ message: 'Erro interno ao cadastrar conteúdo.' });
+        res.status(500).json({ 
+            message: 'Erro interno ao cadastrar conteúdo.',
+            details: error?.message || String(error),
+            code: error?.code,
+            sqlMessage: error?.sqlMessage
+        });
     }
 };
 
