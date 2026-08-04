@@ -6,6 +6,12 @@ import { ContentModal } from '../components/ContentModal';
 import { Play, Info } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+const CATEGORIES = [
+  'Ação', 'Aventura', 'Artes Marciais', 'Policial', 'Drama', 'Comédia',
+  'Terror', 'Guerra', 'Faroeste', 'Ficção Científica', 'Religião',
+  'Documentário', 'Medieval', 'Clássicos', 'Animação', 'Suspense'
+];
+
 export const Home = () => {
   const [contents, setContents] = useState<any[]>([]);
   const [heroMovie, setHeroMovie] = useState<any>(null);
@@ -69,11 +75,11 @@ export const Home = () => {
             <h1 className="text-4xl sm:text-7xl font-black text-white mb-6 drop-shadow-2xl tracking-tight">
               {heroMovie.title}
             </h1>
-            <p className="text-white text-lg sm:text-xl text-shadow-md mb-8 line-clamp-3 font-medium">
-              {heroMovie.description || 'Assista a este incrível sucesso diretamente na nossa plataforma. Disponível agora.'}
+            <p className="text-gray-200 text-sm sm:text-lg mb-8 line-clamp-3 drop-shadow-md">
+              {heroMovie.description}
             </p>
             
-            <div className="flex gap-4">
+            <div className="flex items-center gap-4">
               <button 
                 onClick={() => navigate(`/watch/${heroMovie.id}`)}
                 className="flex items-center justify-center gap-2 bg-white text-black px-6 py-2 md:px-8 md:py-3 rounded shadow-lg hover:bg-white/80 transition-colors font-bold text-lg md:text-xl"
@@ -103,11 +109,20 @@ export const Home = () => {
           items={location.pathname === '/trending' ? filteredContents : filteredContents.slice().reverse()} 
           onOpenDetails={setSelectedMovie} 
         />
-        <ContentRow 
-          title="Assistir Novamente" 
-          items={filteredContents} 
-          onOpenDetails={setSelectedMovie} 
-        />
+
+        {/* Trilhas por Categorias/Gêneros */}
+        {CATEGORIES.map(cat => {
+          const catItems = filteredContents.filter(c => c.genre_names?.includes(cat));
+          if (catItems.length === 0) return null;
+          return (
+            <ContentRow 
+              key={cat}
+              title={cat} 
+              items={catItems} 
+              onOpenDetails={setSelectedMovie} 
+            />
+          );
+        })}
       </div>
 
       <ContentModal 

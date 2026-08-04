@@ -18,13 +18,37 @@ export const AdminContentModal: React.FC<AdminContentModalProps> = ({ isOpen, on
     release_year: new Date().getFullYear(),
     content_type: 'movie',
     thumbnail_url: '',
-    video_url: ''
+    video_url: '',
+    is_featured: false,
+    featured_image_url: '',
+    genre_ids: [] as number[]
   });
   const [loading, setLoading] = useState(false);
+  const [genres, setGenres] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const res = await api.get('/client/genres');
+        setGenres(res.data || []);
+      } catch (err) {
+        console.error('Erro ao buscar gêneros:', err);
+      }
+    };
+    if (isOpen) {
+      fetchGenres();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
       if (content) {
+        let initialGenreIds: number[] = [];
+        if (content.genre_ids) {
+          initialGenreIds = typeof content.genre_ids === 'string'
+            ? content.genre_ids.split(',').map((id: string) => Number(id.trim())).filter(Boolean)
+            : Array.isArray(content.genre_ids) ? content.genre_ids : [];
+        }
         setFormData({
           title: content.title || '',
           description: content.description || '',
@@ -33,7 +57,8 @@ export const AdminContentModal: React.FC<AdminContentModalProps> = ({ isOpen, on
           thumbnail_url: content.thumbnail_url || '',
           video_url: content.video_url || '',
           is_featured: content.is_featured === 1 || content.is_featured === true,
-          featured_image_url: content.featured_image_url || ''
+          featured_image_url: content.featured_image_url || '',
+          genre_ids: initialGenreIds
         });
       } else {
         setFormData({
@@ -44,7 +69,8 @@ export const AdminContentModal: React.FC<AdminContentModalProps> = ({ isOpen, on
           thumbnail_url: '',
           video_url: '',
           is_featured: false,
-          featured_image_url: ''
+          featured_image_url: '',
+          genre_ids: []
         });
       }
     }
@@ -57,6 +83,14 @@ export const AdminContentModal: React.FC<AdminContentModalProps> = ({ isOpen, on
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
+  };
+
+  const toggleGenre = (id: number) => {
+    setFormData(prev => {
+      const exists = prev.genre_ids.includes(id);
+      const nextIds = exists ? prev.genre_ids.filter(g => g !== id) : [...prev.genre_ids, id];
+      return { ...prev, genre_ids: nextIds };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -135,6 +169,26 @@ export const AdminContentModal: React.FC<AdminContentModalProps> = ({ isOpen, on
                 <option value="movie">Filme</option>
                 <option value="series">Série</option>
               </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">Categorias / Gêneros</label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-44 overflow-y-auto bg-[#222] p-3 rounded border border-[#444]">
+              {genres.map((g: any) => {
+                const checked = formData.genre_ids.includes(g.id);
+                return (
+                  <label key={g.id} className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer hover:text-white select-none">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleGenre(g.id)}
+                      className="accent-netflix-red w-4 h-4"
+                    />
+                    {g.name}
+                  </label>
+                );
+              })}
             </div>
           </div>
 
