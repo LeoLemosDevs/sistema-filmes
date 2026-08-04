@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { db } from '../config/database';
 import * as favoriteModel from '../models/favoriteModel';
+import * as contentModel from '../models/contentModel';
 
 export const getAllContent = async (req: Request, res: Response) => {
     try {
-        const result = await db.query('SELECT * FROM Content ORDER BY release_year DESC');
-        res.status(200).json(result.rows);
+        const contents = await contentModel.getAllContent();
+        res.status(200).json(contents);
     } catch (error) {
         console.error('Erro ao buscar conteúdos:', error);
         res.status(500).json({ message: 'Erro interno ao listar conteúdos.' });
@@ -17,10 +18,19 @@ export const searchContent = async (req: Request, res: Response) => {
         const q = req.query.q as string;
         if (!q) return res.status(200).json([]);
         
-        const result = await db.query(
-            'SELECT * FROM Content WHERE title LIKE ? OR description LIKE ? ORDER BY release_year DESC',
-            [`%${q}%`, `%${q}%`]
-        );
+        const query = `
+            SELECT 
+                c.*, 
+                GROUP_CONCAT(g.name SEPARATOR ', ') AS genre_names,
+                GROUP_CONCAT(g.id SEPARATOR ',') AS genre_ids
+            FROM Content c
+            LEFT JOIN Content_Genres cg ON c.id = cg.content_id
+            LEFT JOIN Genres g ON cg.genre_id = g.id
+            WHERE c.title LIKE ? OR c.description LIKE ?
+            GROUP BY c.id
+            ORDER BY c.release_year DESC
+        `;
+        const result = await db.query(query, [`%${q}%`, `%${q}%`]);
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Erro na pesquisa:', error);
