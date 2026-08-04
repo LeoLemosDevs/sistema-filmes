@@ -13,8 +13,11 @@
 
 ## 2.1 Novas Funcionalidades Recentes
 
+- **Suporte Completo a 16 Categorias/Gêneros e Trilhas Dinâmicas na Home:** Sistema multi-categoria onde filmes e séries podem ser associados a múltiplos gêneros no banco de dados (`Ação`, `Aventura`, `Artes Marciais`, `Policial`, `Drama`, `Comédia`, `Terror`, `Guerra`, `Faroeste`, `Ficção Científica`, `Religião`, `Documentário`, `Medieval`, `Clássicos`, `Animação`, `Suspense`). A Página Inicial gera automaticamente trilhas estilo Netflix para cada categoria com conteúdos cadastrados.
+- **Suporte a Vídeos do Google Drive (Preview e Embed):** Integração automática com links do Google Drive (`/view?usp=sharing` ou `/file/d/...`), convertendo links normais em players de embed responsivos que suportam seletor de resolução (360p, 720p HD e 1080p Full HD) gerados pelo Drive.
+- **Auto-Configuração de Deploy Multi-Ambiente (Vercel e Render):** Suporte nativo a build na raiz do repositório (`vercel.json` e `package.json` na raiz) garantindo deploy contínuo (CI/CD) automático via push no GitHub.
 - **Servidor Interno de Streaming (Plex-like):** Permite importar vídeos de pastas locais (ex: `C:/Filmes`) e transmiti-los ao player do navegador através de HTTP Range Requests sem ferir políticas CORS.
-- **Admin Video Preview:** Formulários administrativos (Conteúdo e Episódios) possuem mini-players de visualização em tempo real (suporta YouTube Iframe e Vídeo Nativo).
+- **Admin Video Preview:** Formulários administrativos (Conteúdo e Episódios) possuem mini-players de visualização em tempo real (suporta YouTube Iframe, Google Drive e Vídeo Nativo).
 - **Hero Banners e Capas Verticais:** O sistema exibe o site usando Capas Estilo DVD/Poster para melhor compatibilidade, destacando Conteúdos sinalizados via um Banner Gigante (16:9).
 - **Gaveta Inteligente de Séries:** O Player possui um menu lateral overlay (estilo Netflix) com as temporadas e episódios permitindo troca rápida de episódios da mesma série.
 
