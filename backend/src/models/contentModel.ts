@@ -1,7 +1,18 @@
 import { db } from '../config/database';
 
 export const getAllContent = async () => {
-    const result = await db.query('SELECT * FROM Content ORDER BY created_at DESC');
+    const query = `
+        SELECT 
+            c.*, 
+            GROUP_CONCAT(g.name SEPARATOR ', ') AS genre_names,
+            GROUP_CONCAT(g.id SEPARATOR ',') AS genre_ids
+        FROM Content c
+        LEFT JOIN Content_Genres cg ON c.id = cg.content_id
+        LEFT JOIN Genres g ON cg.genre_id = g.id
+        GROUP BY c.id
+        ORDER BY c.created_at DESC
+    `;
+    const result = await db.query(query);
     return result.rows;
 };
 
@@ -69,6 +80,12 @@ export const updateContent = async (id: number, contentData: any) => {
     ];
     
     await db.execute(query, values);
+    if (contentData.genre_ids && Array.isArray(contentData.genre_ids)) {
+        await db.query('DELETE FROM Content_Genres WHERE content_id = ?', [id]);
+        for (const genreId of contentData.genre_ids) {
+            await db.query('INSERT INTO Content_Genres (content_id, genre_id) VALUES (?, ?)', [id, genreId]);
+        }
+    }
     const result = await db.query('SELECT * FROM Content WHERE id = ?', [id]);
     return result.rows[0];
 };

@@ -1,11 +1,15 @@
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/authMiddleware';
 import * as clientController from '../controllers/clientController';
+import * as genreController from '../controllers/genreController';
 
 const router = Router();
 
 // Apenas usuários autenticados (não precisa ser admin)
 router.use(authMiddleware);
+
+// Gêneros
+router.get('/genres', genreController.getGenres);
 
 // Catálogo e Busca
 router.get('/content', clientController.getAllContent);
