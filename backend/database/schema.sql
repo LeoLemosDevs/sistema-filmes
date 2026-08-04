@@ -2,7 +2,7 @@
 
 -- 1. Tabela de Usuários
 CREATE TABLE Users (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -15,7 +15,7 @@ CREATE INDEX idx_users_email ON Users(email);
 
 -- 2. Tabela Principal de Conteúdo
 CREATE TABLE Content (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     thumbnail_url VARCHAR(512),
@@ -31,7 +31,7 @@ CREATE INDEX idx_content_title ON Content(title);
 
 -- 3. Tabela de Gêneros
 CREATE TABLE Genres (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) UNIQUE NOT NULL
 );
 
@@ -46,7 +46,7 @@ CREATE TABLE Content_Genres (
 
 -- 5. Metadados para Séries (Séries, Desenhos, Animes)
 CREATE TABLE Series_Metadata (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     content_id INT UNIQUE NOT NULL,
     total_seasons INT DEFAULT 1,
     CONSTRAINT fk_series_content FOREIGN KEY (content_id) REFERENCES Content(id) ON DELETE CASCADE
@@ -54,7 +54,7 @@ CREATE TABLE Series_Metadata (
 
 -- 6. Tabela de Episódios
 CREATE TABLE Episodes (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     series_id INT NOT NULL,
     season_number INT NOT NULL,
     episode_number INT NOT NULL,

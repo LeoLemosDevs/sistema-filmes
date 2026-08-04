@@ -1,5 +1,5 @@
 -- Popula a tabela de gêneros inicialmente
-INSERT INTO Genres (name) VALUES 
+INSERT IGNORE INTO Genres (name) VALUES 
 ('Ação'),
 ('Comédia'),
 ('Drama'),
@@ -9,5 +9,4 @@ INSERT INTO Genres (name) VALUES
 ('Documentário'),
 ('Fantasia'),
 ('Suspense'),
-('Aventura')
-ON CONFLICT (name) DO NOTHING;
+('Aventura');
