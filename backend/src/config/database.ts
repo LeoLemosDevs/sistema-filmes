@@ -11,7 +11,8 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME || 'filmes_stream',
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    ssl: process.env.DB_HOST?.includes('tidbcloud') ? { minVersion: 'TLSv1.2', rejectUnauthorized: true } : undefined
 });
 
 export const db = {
