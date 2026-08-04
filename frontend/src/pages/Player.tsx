@@ -116,6 +116,17 @@ export const Player = () => {
               allowFullScreen
             ></iframe>
           );
+        })() : videoUrl.includes('drive.google.com') ? (() => {
+          const match = videoUrl.match(/\/d\/([a-zA-Z0-9_-]+)/) || videoUrl.match(/id=([a-zA-Z0-9_-]+)/);
+          const driveId = match ? match[1] : '';
+          return (
+            <iframe 
+              src={`https://drive.google.com/file/d/${driveId}/preview`} 
+              className="w-full h-full border-none"
+              allow="autoplay; fullscreen"
+              allowFullScreen
+            ></iframe>
+          );
         })() : (
           <video 
             src={videoUrl} 

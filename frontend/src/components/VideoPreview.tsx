@@ -14,6 +14,7 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({ url }) => {
   }
 
   const isYouTube = url.includes('youtube.com/watch') || url.includes('youtu.be/');
+  const isDrive = url.includes('drive.google.com');
 
   return (
     <div className="mt-2 w-full max-w-sm aspect-video bg-black rounded overflow-hidden border border-gray-700 shadow-md">
@@ -32,6 +33,17 @@ export const VideoPreview: React.FC<VideoPreviewProps> = ({ url }) => {
             src={`https://www.youtube.com/embed/${ytId}?rel=0&showinfo=0`} 
             className="w-full h-full border-none"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowFullScreen
+          ></iframe>
+        );
+      })() : isDrive ? (() => {
+        const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+        const driveId = match ? match[1] : '';
+        return (
+          <iframe 
+            src={`https://drive.google.com/file/d/${driveId}/preview`} 
+            className="w-full h-full border-none"
+            allow="autoplay; fullscreen"
             allowFullScreen
           ></iframe>
         );
